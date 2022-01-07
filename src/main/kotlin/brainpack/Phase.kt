@@ -144,12 +144,12 @@ fun generate(instructions: List<Structured>): Map<String, List<String>> {
             "data remove storage $namespace $reversed[-1]"
         ) + (0..255).map { // TODO: use 4-ary tree
             val value = when (val char = it.toChar()) {
-                '\n' -> """"\\n""""
-                '\r' -> """"\\r""""
-                '"' -> """'"'"""
-                '\'' -> """"'""""
-                '\\' -> """"\\""""
-                else -> """"$char""""
+                '\n' -> """'"\\n"'"""
+                '\r' -> """'"\\r"'"""
+                '"' -> """'"\\""'"""
+                '\'' -> """'"\'"'"""
+                '\\' -> """'"\\\\"'"""
+                else -> """'"$char"'"""
             }
             "execute if score $data $objective matches ${it.toByte()} run data modify storage $namespace $printed append value $value"
         } + "execute if data storage $namespace $reversed[0] run function $namespace$print",
@@ -199,7 +199,7 @@ fun generate(instructions: List<Structured>): Map<String, List<String>> {
         "function $namespace$reverse",
         "data remove storage $namespace $printed",
         "function $namespace$print",
-        """tellraw @s {"nbt": "$printed", "storage": "$namespace", "interpret": true}"""
+        """tellraw @s {"nbt": "$printed[]", "separator": "", "interpret": true, "storage": "$namespace"}"""
     )
 
     return functions

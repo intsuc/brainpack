@@ -56,4 +56,4 @@ function brainfuck:write
 function brainfuck:reverse
 data remove storage brainfuck: printed
 function brainfuck:print
-tellraw @s {"nbt": "printed", "storage": "brainfuck:", "interpret": true}
+tellraw @s {"nbt": "printed[]", "separator": "", "interpret": true, "storage": "brainfuck:"}

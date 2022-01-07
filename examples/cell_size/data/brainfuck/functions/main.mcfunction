@@ -66,4 +66,4 @@ execute unless score data brainfuck matches 0 run function brainfuck:loop_17
 function brainfuck:reverse
 data remove storage brainfuck: printed
 function brainfuck:print
-tellraw @s {"nbt": "printed", "storage": "brainfuck:", "interpret": true}
+tellraw @s {"nbt": "printed[]", "separator": "", "interpret": true, "storage": "brainfuck:"}
