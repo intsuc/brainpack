@@ -1,5 +1,8 @@
 package brainpack
 
+import java.util.zip.ZipEntry
+import java.util.zip.ZipOutputStream
+
 fun parse(source: String): List<Instruction> = mutableListOf<Instruction>().also { instructions ->
     var depth = 0
 
@@ -133,35 +136,35 @@ fun generate(instructions: List<Structured>): Map<String, List<String>> {
 
     fun visit(current: MutableList<String>, instructions: List<Structured>): Unit = instructions.forEach {
         when (it) {
-            is Structured.IncPtr -> current += "function $namespace:$incPtr"
-            is Structured.DecPtr -> current += "function $namespace:$decPtr"
+            is Structured.IncPtr -> current += "function $namespace$incPtr"
+            is Structured.DecPtr -> current += "function $namespace$decPtr"
             is Structured.Inc -> {
                 val path = "inc_${it.value}"
                 functions.computeIfAbsent(path) { _ ->
                     listOf(
-                        "function $namespace:$load"
+                        "function $namespace$load"
                     ) + if (it.value >= 0) {
                         "execute store result storage $namespace $memoryRight[-1] byte 1.0 run scoreboard players add $data $objective ${it.value}"
                     } else {
                         "execute store result storage $namespace $memoryRight[-1] byte 1.0 run scoreboard players remove $data $objective ${-it.value}"
                     }
                 }
-                current += "function $namespace:$path"
+                current += "function $namespace$path"
             }
-            is Structured.Write -> current += "function $namespace:$write"
-            is Structured.Read -> current += "function $namespace:$read"
+            is Structured.Write -> current += "function $namespace$write"
+            is Structured.Read -> current += "function $namespace$read"
             is Structured.Loop -> {
                 val path = "loop_${id++}"
                 val body = mutableListOf<String>()
                 functions[path] = body
                 current += listOf(
-                    "function $namespace:$load",
-                    "execute unless score $data $objective matches 0 run function $namespace:$path"
+                    "function $namespace$load",
+                    "execute unless score $data $objective matches 0 run function $namespace$path"
                 )
                 visit(body, it.body)
                 body += listOf(
-                    "function $namespace:$load",
-                    "execute unless score $data $objective matches 0 run function $namespace:$path"
+                    "function $namespace$load",
+                    "execute unless score $data $objective matches 0 run function $namespace$path"
                 )
             }
         }
@@ -170,4 +173,27 @@ fun generate(instructions: List<Structured>): Map<String, List<String>> {
     visit(mainBody, instructions)
 
     return functions
+}
+
+fun write(functions: Map<String, List<String>>): (ZipOutputStream) -> Unit = { out ->
+    out.putNextEntry(ZipEntry("pack.mcmeta"))
+    out.write(
+        """{
+        |  "pack": {
+        |    "description": "",
+        |    "pack_format": 8
+        |  }
+        |}
+        |""".trimMargin().toByteArray()
+    )
+    out.closeEntry()
+
+    functions.forEach { (path, commands) ->
+        out.putNextEntry(ZipEntry("data/brainfuck/functions/$path.mcfunction"))
+        commands.forEach {
+            out.write(it.toByteArray())
+            out.write('\n'.code)
+        }
+        out.closeEntry()
+    }
 }

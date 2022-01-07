@@ -21,10 +21,10 @@ class ParseTest {
     }
 
     @Test
-    fun add() {
+    fun all() {
         assertEquals(
-            listOf(BEGIN, DEC, INC_PTR, INC, DEC_PTR, END),
-            parse("[->+<]")
+            listOf(INC_PTR, DEC_PTR, INC, DEC, WRITE, READ, BEGIN, END),
+            parse("><+-.,[]")
         )
     }
 }
