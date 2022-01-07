@@ -155,7 +155,7 @@ fun generate(instructions: List<Structured>): Map<String, List<String>> {
             tree(min1, max1)
             "execute if score $data $objective matches $min1..$max1 run function $namespace${print}_${min1}_$max1"
         } else (min..max).map {
-            val value = when (val char = it.toChar()) {
+            val value = when (val char = it.toUByte().toInt().toChar()) {
                 '\n' -> """'"\\n"'"""
                 '\r' -> """'"\\r"'"""
                 '"' -> """'"\\""'"""
