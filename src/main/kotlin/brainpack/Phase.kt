@@ -141,8 +141,20 @@ fun generate(instructions: List<Structured>): Map<String, List<String>> {
         ),
         print to listOf(
             "execute store result score $data $objective run data get storage $namespace $reversed[-1] 1.0",
-            "data remove storage $namespace $reversed[-1]"
-        ) + (0..255).map { // TODO: use 4-ary tree
+            "data remove storage $namespace $reversed[-1]",
+            "function $namespace${print}_${Byte.MIN_VALUE}_${Byte.MAX_VALUE}",
+            "execute if data storage $namespace $reversed[0] run function $namespace$print"
+        )
+    )
+
+    fun tree(min: Int, max: Int) {
+        functions["${print}_${min}_$max"] = if (max - min > 4) (0..3).map {
+            val size = (max - min + 1) / 4
+            val min1 = min + it * size
+            val max1 = min1 + size - 1
+            tree(min1, max1)
+            "execute if score $data $objective matches $min1..$max1 run function $namespace${print}_${min1}_$max1"
+        } else (min..max).map {
             val value = when (val char = it.toChar()) {
                 '\n' -> """'"\\n"'"""
                 '\r' -> """'"\\r"'"""
@@ -152,10 +164,12 @@ fun generate(instructions: List<Structured>): Map<String, List<String>> {
                 else -> """'"$char"'"""
             }
             "execute if score $data $objective matches ${it.toByte()} run data modify storage $namespace $printed append value $value"
-        } + "execute if data storage $namespace $reversed[0] run function $namespace$print",
-    )
+        }
+    }
 
-    var id = 0
+    tree(Byte.MIN_VALUE.toInt(), Byte.MAX_VALUE.toInt())
+
+    var loopId = 0
 
     fun visit(current: MutableList<String>, instructions: List<Structured>): Unit = instructions.forEach {
         when (it) {
@@ -177,7 +191,7 @@ fun generate(instructions: List<Structured>): Map<String, List<String>> {
             is Structured.Write -> current += "function $namespace$write"
             is Structured.Read -> current += "function $namespace$read"
             is Structured.Loop -> {
-                val path = "loop_${id++}"
+                val path = "loop_${loopId++}"
                 val body = mutableListOf<String>()
                 functions[path] = body
                 current += listOf(
