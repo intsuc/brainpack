@@ -1,6 +1,6 @@
 package brainpack
 
-import brainpack.Command.*
+import brainpack.Instruction.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFails

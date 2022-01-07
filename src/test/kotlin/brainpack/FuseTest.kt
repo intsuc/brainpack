@@ -1,12 +1,12 @@
 package brainpack
 
-import brainpack.Command.*
+import brainpack.Instruction.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class FuseTest {
     @Test
-    fun fuseInc() {
+    fun inc() {
         assertEquals(
             listOf(Fused.Inc(2)),
             fuse(listOf(INC, INC))
@@ -14,7 +14,7 @@ class FuseTest {
     }
 
     @Test
-    fun fuseDec() {
+    fun dec() {
         assertEquals(
             listOf(Fused.Inc(-2)),
             fuse(listOf(DEC, DEC))
@@ -22,7 +22,7 @@ class FuseTest {
     }
 
     @Test
-    fun fuseIncDec() {
+    fun incDec() {
         assertEquals(
             emptyList(),
             fuse(listOf(INC, DEC))
@@ -30,7 +30,7 @@ class FuseTest {
     }
 
     @Test
-    fun fuseDecInc() {
+    fun decInc() {
         assertEquals(
             emptyList(),
             fuse(listOf(DEC, INC))
@@ -38,23 +38,7 @@ class FuseTest {
     }
 
     @Test
-    fun fuseIncPtr() {
-        assertEquals(
-            listOf(Fused.IncPtr(2)),
-            fuse(listOf(INC_PTR, INC_PTR))
-        )
-    }
-
-    @Test
-    fun fuseDecPtr() {
-        assertEquals(
-            listOf(Fused.IncPtr(-2)),
-            fuse(listOf(DEC_PTR, DEC_PTR))
-        )
-    }
-
-    @Test
-    fun fuseIncPtrDecPtr() {
+    fun incPtrDecPtr() {
         assertEquals(
             emptyList(),
             fuse(listOf(INC_PTR, DEC_PTR))
@@ -62,7 +46,7 @@ class FuseTest {
     }
 
     @Test
-    fun fuseDecPtrIncPtr() {
+    fun decPtrIncPtr() {
         assertEquals(
             emptyList(),
             fuse(listOf(DEC_PTR, INC_PTR))

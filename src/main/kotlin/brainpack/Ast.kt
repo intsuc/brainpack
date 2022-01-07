@@ -1,6 +1,6 @@
 package brainpack
 
-enum class Command {
+enum class Instruction {
     INC_PTR,
     DEC_PTR,
     INC,
@@ -12,7 +12,8 @@ enum class Command {
 }
 
 sealed class Fused {
-    data class IncPtr(val value: Int) : Fused()
+    object IncPtr : Fused()
+    object DecPtr : Fused()
     data class Inc(val value: Int) : Fused()
     object Write : Fused()
     object Read : Fused()
@@ -21,7 +22,8 @@ sealed class Fused {
 }
 
 sealed class Structured {
-    data class IncPtr(val value: Int) : Structured()
+    object IncPtr : Structured()
+    object DecPtr : Structured()
     data class Inc(val value: Int) : Structured()
     object Write : Structured()
     object Read : Structured()
