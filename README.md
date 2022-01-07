@@ -13,5 +13,4 @@ A brainfuck to datapack compiler.
 ```mcfunction
 data modify storage brainfuck: input ...
 function brainfuck:main
-data get storage brainfuck: output
 ```
