@@ -1,1 +1,1 @@
-rootProject.name = "brainfuck2datapack"
+rootProject.name = "brainpack"
