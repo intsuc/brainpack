@@ -5,7 +5,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFails
 
-class ParserTest {
+class ParseTest {
     @Test
     fun missingBegin() {
         assertFails {
