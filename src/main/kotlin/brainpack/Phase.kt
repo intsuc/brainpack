@@ -98,6 +98,7 @@ fun generate(instructions: List<Structured>): Map<String, List<String>> {
     val load = "load"
 
     val mainBody = mutableListOf(
+        "scoreboard objectives remove $objective",
         "scoreboard objectives add $objective dummy",
         "data modify storage $namespace $memoryLeft set value []",
         "data modify storage $namespace $memoryRight set value [0b]",
