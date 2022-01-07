@@ -64,3 +64,22 @@ fun fuse(commands: List<Command>): List<Fused> = mutableListOf<Fused>().also { s
         }
     }
 }
+
+fun structure(commands: List<Fused>): List<Structured> =
+    mutableListOf(mutableListOf<Structured>())
+        .also { stacks ->
+            commands.forEach {
+                when (it) {
+                    is Fused.IncPtr -> stacks.last() += Structured.IncPtr(it.value)
+                    is Fused.Inc -> stacks.last() += Structured.Inc(it.value)
+                    is Fused.Write -> stacks.last() += Structured.Write
+                    is Fused.Read -> stacks.last() += Structured.Read
+                    is Fused.Begin -> stacks.add(mutableListOf())
+                    is Fused.End -> {
+                        val body = stacks.removeLast()
+                        stacks.last() += Structured.Loop(body)
+                    }
+                }
+            }
+        }
+        .flatten()

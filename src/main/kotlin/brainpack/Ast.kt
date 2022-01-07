@@ -19,3 +19,11 @@ sealed class Fused {
     object Begin : Fused()
     object End : Fused()
 }
+
+sealed class Structured {
+    data class IncPtr(val value: Int) : Structured()
+    data class Inc(val value: Int) : Structured()
+    object Write : Structured()
+    object Read : Structured()
+    data class Loop(val body: List<Structured>) : Structured()
+}
