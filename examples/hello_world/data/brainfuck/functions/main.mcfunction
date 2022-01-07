@@ -53,3 +53,7 @@ function brainfuck:write
 function brainfuck:inc_ptr
 function brainfuck:inc_2
 function brainfuck:write
+function brainfuck:reverse
+data remove storage brainfuck: printed
+function brainfuck:print
+tellraw @s {"nbt": "printed", "storage": "brainfuck:", "interpret": true}

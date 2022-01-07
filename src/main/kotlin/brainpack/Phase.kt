@@ -92,6 +92,8 @@ fun generate(instructions: List<Structured>): Map<String, List<String>> {
     val memoryRight = "memory_right"
     val output = "output"
     val input = "input"
+    val reversed = "reversed"
+    val printed = "printed"
 
     val main = "main"
     val incPtr = "inc_ptr"
@@ -99,15 +101,17 @@ fun generate(instructions: List<Structured>): Map<String, List<String>> {
     val write = "write"
     val read = "read"
     val load = "load"
+    val reverse = "reverse"
+    val print = "print"
 
     val mainBody = mutableListOf(
         "scoreboard objectives remove $objective",
         "scoreboard objectives add $objective dummy",
         "data modify storage $namespace $memoryLeft set value []",
         "data modify storage $namespace $memoryRight set value [0b]",
-    ).apply {
-        addAll(List(15) { "data modify storage $namespace $memoryRight append from storage $namespace $memoryRight[]" })
-        add("data modify storage $namespace output set value []")
+    ).also {
+        it += List(15) { "data modify storage $namespace $memoryRight append from storage $namespace $memoryRight[]" }
+        it += "data modify storage $namespace output set value []"
     }
 
     val functions = mutableMapOf(
@@ -129,7 +133,26 @@ fun generate(instructions: List<Structured>): Map<String, List<String>> {
         ),
         load to listOf(
             "execute store result score $data $objective run data get storage $namespace $memoryRight[-1] 1.0"
-        )
+        ),
+        reverse to listOf(
+            "data modify storage $namespace $reversed append from storage $namespace $output[-1]",
+            "data remove storage $namespace $output[-1]",
+            "execute if data storage $namespace $output[0] run function $namespace$reverse"
+        ),
+        print to listOf(
+            "execute store result score $data $objective run data get storage $namespace $reversed[-1] 1.0",
+            "data remove storage $namespace $reversed[-1]"
+        ) + (0..255).map { // TODO: use 4-ary tree
+            val value = when (val char = it.toChar()) {
+                '\n' -> """"\\n""""
+                '\r' -> """"\\r""""
+                '"' -> """'"'"""
+                '\'' -> """"'""""
+                '\\' -> """"\\""""
+                else -> """"$char""""
+            }
+            "execute if score $data $objective matches ${it.toByte()} run data modify storage $namespace $printed append value $value"
+        } + "execute if data storage $namespace $reversed[0] run function $namespace$print",
     )
 
     var id = 0
@@ -171,6 +194,13 @@ fun generate(instructions: List<Structured>): Map<String, List<String>> {
     }
 
     visit(mainBody, instructions)
+
+    mainBody += listOf(
+        "function $namespace$reverse",
+        "data remove storage $namespace $printed",
+        "function $namespace$print",
+        """tellraw @s {"nbt": "$printed", "storage": "$namespace", "interpret": true}"""
+    )
 
     return functions
 }
