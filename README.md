@@ -10,7 +10,9 @@ A brainfuck to datapack compiler.
 
 ### Run
 
-```mcfunction
-data modify storage brainfuck: input ...
-function brainfuck:main
-```
+1. ```mcfunction
+   data modify storage brainfuck: input ...
+   ```
+2. ```mcfunction
+   function brainfuck:main
+   ```
