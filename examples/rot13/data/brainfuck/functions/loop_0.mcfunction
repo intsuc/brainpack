@@ -4,23 +4,19 @@ execute unless score data brainfuck matches 0 run function brainfuck:loop_1
 function brainfuck:inc_ptr
 function brainfuck:inc_ptr
 function brainfuck:inc_ptr
-function brainfuck:load
-execute unless score data brainfuck matches 0 run function brainfuck:loop_7
-function brainfuck:inc_1
+function brainfuck:set_1
 function brainfuck:inc_ptr
 function brainfuck:inc_-2
 function brainfuck:load
-execute unless score data brainfuck matches 0 run function brainfuck:loop_8
+execute unless score data brainfuck matches 0 run function brainfuck:loop_7
 function brainfuck:dec_ptr
 function brainfuck:load
-execute unless score data brainfuck matches 0 run function brainfuck:loop_11
+execute unless score data brainfuck matches 0 run function brainfuck:loop_9
 function brainfuck:dec_ptr
-function brainfuck:load
-execute unless score data brainfuck matches 0 run function brainfuck:loop_22
+function brainfuck:set_0
 function brainfuck:dec_ptr
 function brainfuck:write
-function brainfuck:load
-execute unless score data brainfuck matches 0 run function brainfuck:loop_23
+function brainfuck:set_0
 function brainfuck:dec_ptr
 function brainfuck:inc_-1
 function brainfuck:read

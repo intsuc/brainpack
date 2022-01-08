@@ -1,5 +1,7 @@
 package brainpack
 
+import brainpack.Fused.Inc
+import brainpack.Fused.Set
 import brainpack.Instruction.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -8,7 +10,7 @@ class FuseTest {
     @Test
     fun inc() {
         assertEquals(
-            listOf(Fused.Inc(2)),
+            listOf(Inc(2)),
             fuse(listOf(INC, INC))
         )
     }
@@ -16,7 +18,7 @@ class FuseTest {
     @Test
     fun dec() {
         assertEquals(
-            listOf(Fused.Inc(-2)),
+            listOf(Inc(-2)),
             fuse(listOf(DEC, DEC))
         )
     }
@@ -50,6 +52,46 @@ class FuseTest {
         assertEquals(
             emptyList(),
             fuse(listOf(DEC_PTR, INC_PTR))
+        )
+    }
+
+    @Test
+    fun beginIncEnd() {
+        assertEquals(
+            listOf(Set(0)),
+            fuse(listOf(BEGIN, INC, END))
+        )
+    }
+
+    @Test
+    fun beginDecEnd() {
+        assertEquals(
+            listOf(Set(0)),
+            fuse(listOf(BEGIN, DEC, END))
+        )
+    }
+
+    @Test
+    fun beginIncIncEnd() {
+        assertEquals(
+            listOf(Set(0)),
+            fuse(listOf(BEGIN, INC, INC, END))
+        )
+    }
+
+    @Test
+    fun setInc() {
+        assertEquals(
+            listOf(Set(1)),
+            fuse(listOf(BEGIN, DEC, END, INC))
+        )
+    }
+
+    @Test
+    fun setIncInc() {
+        assertEquals(
+            listOf(Set(2)),
+            fuse(listOf(BEGIN, DEC, END, INC, INC))
         )
     }
 }

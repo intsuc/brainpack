@@ -15,6 +15,6 @@ function brainfuck:load
 execute unless score data brainfuck matches 0 run function brainfuck:loop_6
 function brainfuck:dec_ptr
 function brainfuck:load
-execute unless score data brainfuck matches 0 run function brainfuck:loop_10
+execute unless score data brainfuck matches 0 run function brainfuck:loop_8
 function brainfuck:load
 execute unless score data brainfuck matches 0 run function brainfuck:loop_2

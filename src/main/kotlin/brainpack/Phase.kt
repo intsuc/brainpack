@@ -43,21 +43,39 @@ fun fuse(instructions: List<Instruction>): List<Fused> = mutableListOf<Fused>().
             Instruction.INC -> when (val last = stack.lastOrNull()) {
                 is Fused.Inc -> {
                     stack.removeLast()
-                    if (last.value + 1 != 0) stack += last.copy(last.value + 1)
+                    if (last.value.inc() != 0) stack += last.copy(last.value.inc())
+                }
+                is Fused.Set -> {
+                    stack.removeLast()
+                    stack += last.copy(last.value.inc())
                 }
                 else -> stack += Fused.Inc(1)
             }
             Instruction.DEC -> when (val last = stack.lastOrNull()) {
                 is Fused.Inc -> {
                     stack.removeLast()
-                    if (last.value - 1 != 0) stack += last.copy(last.value - 1)
+                    if (last.value.dec() != 0) stack += last.copy(last.value.dec())
+                }
+                is Fused.Set -> {
+                    stack.removeLast()
+                    stack += last.copy(last.value.dec())
                 }
                 else -> stack += Fused.Inc(-1)
             }
             Instruction.WRITE -> stack += Fused.Write
             Instruction.READ -> stack += Fused.Read
             Instruction.BEGIN -> stack += Fused.Begin
-            Instruction.END -> stack += Fused.End
+            Instruction.END -> when (stack.lastOrNull()) {
+                is Fused.Inc -> when (stack.dropLast(1).lastOrNull()) {
+                    is Fused.Begin -> {
+                        stack.removeLast()
+                        stack.removeLast()
+                        stack += Fused.Set(0)
+                    }
+                    else -> stack += Fused.End
+                }
+                else -> stack += Fused.End
+            }
         }
     }
 }
@@ -70,6 +88,7 @@ fun structure(instructions: List<Fused>): List<Structured> =
                     is Fused.IncPtr -> stacks.last() += Structured.IncPtr
                     is Fused.DecPtr -> stacks.last() += Structured.DecPtr
                     is Fused.Inc -> stacks.last() += Structured.Inc(it.value)
+                    is Fused.Set -> stacks.last() += Structured.Set(it.value)
                     is Fused.Write -> stacks.last() += Structured.Write
                     is Fused.Read -> stacks.last() += Structured.Read
                     is Fused.Begin -> stacks.add(mutableListOf())
@@ -98,6 +117,8 @@ fun generate(instructions: List<Structured>): Map<String, List<String>> {
     val main = "main"
     val incPtr = "inc_ptr"
     val decPtr = "dec_ptr"
+    val inc = "inc"
+    val set = "set"
     val write = "write"
     val read = "read"
     val load = "load"
@@ -176,7 +197,7 @@ fun generate(instructions: List<Structured>): Map<String, List<String>> {
             is Structured.IncPtr -> current += "function $namespace$incPtr"
             is Structured.DecPtr -> current += "function $namespace$decPtr"
             is Structured.Inc -> {
-                val path = "inc_${it.value}"
+                val path = "${inc}_${it.value}"
                 functions.computeIfAbsent(path) { _ ->
                     listOf(
                         "function $namespace$load"
@@ -185,6 +206,15 @@ fun generate(instructions: List<Structured>): Map<String, List<String>> {
                     } else {
                         "execute store result storage $namespace $memoryRight[-1] byte 1.0 run scoreboard players remove $data $objective ${-it.value}"
                     }
+                }
+                current += "function $namespace$path"
+            }
+            is Structured.Set -> {
+                val path = "${set}_${it.value}"
+                functions.computeIfAbsent(path) { _ ->
+                    listOf(
+                        "data modify storage $namespace $memoryRight[-1] set value ${it.value}b"
+                    )
                 }
                 current += "function $namespace$path"
             }

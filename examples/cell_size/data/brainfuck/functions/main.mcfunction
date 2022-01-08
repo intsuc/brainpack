@@ -30,11 +30,11 @@ function brainfuck:load
 execute unless score data brainfuck matches 0 run function brainfuck:loop_2
 function brainfuck:inc_ptr
 function brainfuck:load
-execute unless score data brainfuck matches 0 run function brainfuck:loop_13
+execute unless score data brainfuck matches 0 run function brainfuck:loop_10
 function brainfuck:dec_ptr
 function brainfuck:inc_11
 function brainfuck:load
-execute unless score data brainfuck matches 0 run function brainfuck:loop_16
+execute unless score data brainfuck matches 0 run function brainfuck:loop_12
 function brainfuck:inc_ptr
 function brainfuck:inc_-1
 function brainfuck:write
@@ -62,7 +62,7 @@ function brainfuck:inc_ptr
 function brainfuck:inc_ptr
 function brainfuck:inc_-1
 function brainfuck:load
-execute unless score data brainfuck matches 0 run function brainfuck:loop_17
+execute unless score data brainfuck matches 0 run function brainfuck:loop_13
 function brainfuck:reverse
 data remove storage brainfuck: printed
 function brainfuck:print
