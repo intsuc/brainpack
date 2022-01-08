@@ -95,4 +95,20 @@ class FuseTest {
             fuse(listOf(BEGIN, DEC, END, INC, INC))
         )
     }
+
+    @Test
+    fun incSet() {
+        assertEquals(
+            listOf(Set(0)),
+            fuse(listOf(INC, BEGIN, INC, END))
+        )
+    }
+
+    @Test
+    fun setSet() {
+        assertEquals(
+            listOf(Set(0)),
+            fuse(listOf(BEGIN, INC, END, BEGIN, INC, END))
+        )
+    }
 }

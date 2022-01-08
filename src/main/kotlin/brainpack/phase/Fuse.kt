@@ -5,6 +5,15 @@ import brainpack.Instruction
 
 
 fun fuse(instructions: List<Instruction>): List<Fused> = mutableListOf<Fused>().also { stack ->
+    fun set(value: Byte) {
+        when (stack.lastOrNull()) {
+            is Fused.Inc -> stack.removeLast()
+            is Fused.Set -> stack.removeLast()
+            else -> {}
+        }
+        stack += Fused.Set(value)
+    }
+
     instructions.forEach {
         when (it) {
             Instruction.INC_PTR -> when (stack.lastOrNull()) {
@@ -22,7 +31,7 @@ fun fuse(instructions: List<Instruction>): List<Fused> = mutableListOf<Fused>().
                 }
                 is Fused.Set -> {
                     stack.removeLast()
-                    stack += last.copy(last.value.inc())
+                    set(last.value.inc())
                 }
                 else -> stack += Fused.Inc(1)
             }
@@ -33,7 +42,7 @@ fun fuse(instructions: List<Instruction>): List<Fused> = mutableListOf<Fused>().
                 }
                 is Fused.Set -> {
                     stack.removeLast()
-                    stack += last.copy(last.value.dec())
+                    set(last.value.dec())
                 }
                 else -> stack += Fused.Inc(-1)
             }
@@ -45,7 +54,7 @@ fun fuse(instructions: List<Instruction>): List<Fused> = mutableListOf<Fused>().
                     is Fused.Begin -> {
                         stack.removeLast()
                         stack.removeLast()
-                        stack += Fused.Set(0)
+                        set(0)
                     }
                     else -> stack += Fused.End
                 }
