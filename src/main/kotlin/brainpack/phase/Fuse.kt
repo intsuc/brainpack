@@ -14,6 +14,8 @@ fun fuse(instructions: List<Instruction>): List<Fused> = mutableListOf<Fused>().
         stack += Fused.Set(value)
     }
 
+    set(0)
+
     instructions.forEach {
         when (it) {
             Instruction.INC_PTR -> when (stack.lastOrNull()) {

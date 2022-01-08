@@ -18,7 +18,7 @@ data modify storage brainfuck: memory_right append from storage brainfuck: memor
 data modify storage brainfuck: memory_right append from storage brainfuck: memory_right[]
 data modify storage brainfuck: memory_right append from storage brainfuck: memory_right[]
 data modify storage brainfuck: output set value []
-function brainfuck:inc_-1
+function brainfuck:set_-1
 function brainfuck:read
 function brainfuck:inc_1
 function brainfuck:load
