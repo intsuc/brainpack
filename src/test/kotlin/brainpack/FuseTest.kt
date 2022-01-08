@@ -3,6 +3,7 @@ package brainpack
 import brainpack.Fused.Inc
 import brainpack.Fused.Set
 import brainpack.Instruction.*
+import brainpack.phase.fuse
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

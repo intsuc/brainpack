@@ -1,6 +1,7 @@
 package brainpack
 
 import brainpack.Instruction.*
+import brainpack.phase.parse
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFails

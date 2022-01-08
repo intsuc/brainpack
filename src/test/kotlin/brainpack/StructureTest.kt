@@ -1,5 +1,6 @@
 package brainpack
 
+import brainpack.phase.structure
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import brainpack.Fused as F
